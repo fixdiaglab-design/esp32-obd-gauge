@@ -74,7 +74,7 @@ CANH → пін 6 розʼєму OBD-II, CANL → пін 14, GND → пін 4 а
 
 1. Зберіть пристрій за схемою ([docs/hardware.md](docs/hardware.md)).
 2. Налаштуйте Arduino IDE й бібліотеки ([docs/software.md](docs/software.md)): плата ESP32, **LVGL 8.3.11**, GFX Library for Arduino. Скопіюйте [`firmware/lv_conf.h`](firmware/lv_conf.h) у `Документи/Arduino/libraries/` (поруч із папкою `lvgl`).
-3. Відкрийте `firmware/speedo_universal/speedo_universal.ino`. Налаштування плати: **ESP32C3 Dev Module**, **USB CDC On Boot: Enabled**, **Partition Scheme: Huge APP (3MB No OTA/1MB SPIFFS)**.
+3. Відкрийте `firmware/speedo_universalwifi/speedo_universalwifi.ino`. Налаштування плати: **ESP32C3 Dev Module**, **USB CDC On Boot: Enabled**, **Partition Scheme: Huge APP (3MB No OTA/1MB SPIFFS)**.
 4. Змініть пароль Wi-Fi `WIFI_PASS` (мінімум 8 символів).
 5. Спершу поставте `#define DEMO 1`, прошийте й переконайтеся, що екран працює. Потім `DEMO 0`.
 6. **Відключіть buck-конвертер** і прошийте через USB. Потім підключіть до авто.
@@ -122,7 +122,7 @@ CANH → пін 6 розʼєму OBD-II, CANL → пін 14, GND → пін 4 а
 
 ## Налаштування в коді
 
-Прапорці вгорі `speedo_universal.ino`:
+Прапорці вгорі `speedo_universalwifi.ino`:
 
 | Параметр | Що робить |
 |---|---|
