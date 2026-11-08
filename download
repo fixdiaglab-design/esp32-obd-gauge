@@ -1,0 +1,15 @@
+# Arduino / збірка
+build/
+*.elf
+*.bin
+*.map
+
+# Редактори та система
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Резервні копії
+*.bak
+*~
