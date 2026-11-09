@@ -152,3 +152,51 @@ flowchart LR
   end
   UI --> LCD["GC9A01 240x240"]
   PHONE["Smartphone"] -- Wi-Fi --> WEB
+Only the currently displayed parameter is polled (plus barometric pressure for boost), keeping updates fast without overloading the bus.
+
+The web server runs in a separate FreeRTOS task and only passes commands: LVGL and CAN are handled by the main loop.
+
+If the car remains silent for 8 seconds (ignition off), the gauge returns to searching.
+
+Repository Structure
+esp32-obd-gauge/
+├─ firmware/
+│  ├─ lv_conf.h                  # LVGL 8.3.11 configuration
+│  └─ speedo_universalwifi/          # Arduino sketch + SquareLine export (ui*.c/h, fonts)
+├─ tools/pidscan/                # Utility: check which PIDs your car supports
+├─ assets/arc-segment-masks/     # Experimental arc segment masks (not currently used)
+├─ docs/                         # hardware.md, software.md, troubleshooting.md, images/
+├─ LICENSE
+└─ README.md
+Safety
+The gauge is read-only: it sends standard Mode 01 requests (broadcast ID 0x7DF) and never writes anything to the car.
+
+Power the gauge from a switched +12V source (fuse tap with ignition), use a 1–2A fuse, and check polarity. Set the buck converter to 5.0V using a multimeter before connecting the board.
+
+OBD-II connector pin 16 has permanent power: drawing power from it will keep the device running even when the ignition is off (current draw was not measured, display backlight remains active even in sleep mode). A fuse tap is strongly recommended.
+
+Do not use your smartphone while driving: configure settings while parked.
+
+The author is not responsible for any consequences of using this project.
+
+Roadmap
+Diagnostic Trouble Code (DTC) reading (Modes 03/07/0A).
+
+29-bit CAN addresses; older cars with K-line (requires a different adapter).
+
+DPF regeneration indicator (based on catalyst temperature or brand-specific data).
+
+Segmented arc (image mask in LVGL 8).
+
+Auto-brightness via photoresistor.
+
+3D printable enclosure already added: 1,28TFT ESP32.stl.
+
+License and Acknowledgments
+Distributed under the MIT License.
+
+LVGL (MIT), GFX Library for Arduino, Espressif TWAI driver.
+
+Interface designed in SquareLine Studio.
+
+Large digits font (ui_font_Font2) generated from Russo One (SIL Open Font License); small labels use Montserrat from LVGL (SIL OFL).
