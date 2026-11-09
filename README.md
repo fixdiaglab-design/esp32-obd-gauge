@@ -1,202 +1,200 @@
+[README.md](https://github.com/user-attachments/files/34588477/README.md)
+[README.md](https://github.com/user-attachments/files/33978812/README.md)
 ![ESP32 OBD-II Gauge](docs/images/banner.png)
 
 # ESP32 OBD-II Gauge
 
-A universal round automotive gauge based on the **ESP32-C3** and a **GC9A01 240×240** round display.
-It reads OBD-II data via the CAN bus, displays it on the screen, and can be controlled via a physical button or **via Wi-Fi from a smartphone** (no app required, using a standard web browser).
+Універсальний круглий прилад для авто на **ESP32-C3** і круглому дисплеї **GC9A01 240×240**.
+Читає дані з OBD-II по CAN-шині, показує їх на екрані й керується кнопкою або **зі смартфона по Wi-Fi** (без застосунку, через браузер).
 
-![Gauge in enclosure: Dashboard screen](docs/images/dash-photo.jpg)
+![Прилад у корпусі: екран «Панель»](docs/images/dash-photo.jpg)
 
-> Tested on a Ford Focus 1.6 diesel (2012). It works on other cars as long as they support standard OBD-II queries (Mode 01) over CAN. This is a DIY project: use at your own risk (see [Safety](#safety)).
+> Перевірено на Ford Focus 1.6 diesel (2012). На інших авто працює, якщо вони підтримують стандартні запити OBD-II (режим 01) по CAN. Проєкт самодіяльний: використовуєте на власний ризик (див. [Безпека](#безпека)).
 
-## Features
+## Можливості
 
-- **Auto-scan vehicle:** The gauge tests 500 and 250 kbps CAN speeds, queries the car for supported standard parameters (PIDs), and displays only the supported ones.
-- **Universal screen:** A single arc, numerical value, name, and units for any parameter (up to 15 parameters, see the [Parameters](#parameters) table).
-- **"Dashboard" screen:** Speed in the center, RPM arc, coolant temperature, and boost.
-- **Control via onboard button** and **smartphone**: Built-in Wi-Fi access point and a web page in your browser.
-- Units: km/h ↔ mph, °C ↔ °F, bar ↔ psi. Smooth brightness adjustment from 5% to 100%.
-- Saves units, the last viewed parameter, screen mode, and brightness.
-- Startup arc animation, color-coded warnings (RPM, coolant temperature, boost, oil).
-- **Overheat protection:** Wi-Fi turns off if the chip temperature exceeds 85 °C and re-enables after cooling down to 75 °C.
-- **Sleep mode:** If the car is not found for 15 minutes, the board enters deep sleep and wakes up upon CAN bus activity.
-- **Read-only:** The gauge sends only standard Mode 01 queries and never writes anything to the car.
-- **DEMO mode** for testing and debugging without a car.
+- **Автопошук авто.** Прилад пробує CAN 500 і 250 кбіт/с, питає в авто, які стандартні параметри (PID) воно підтримує, і показує лише їх.
+- **Універсальний екран:** одна дуга, число, назва й одиниці для будь-якого параметра (до 15 параметрів, див. [таблицю](#параметри)).
+- **Екран «Панель»:** швидкість у центрі, обороти дугою, температура ОР і boost.
+- **Керування кнопкою** на платі та **зі смартфона**: точка доступу Wi-Fi і сторінка в браузері.
+- Одиниці виміру: км/год ↔ mph, °C ↔ °F, бар ↔ psi. Плавна яскравість 5–100 %.
+- Запам'ятовує одиниці, останній параметр, вигляд екрана й яскравість.
+- Стартова анімація дуги, кольорові попередження (обороти, температура ОР, boost, олива).
+- **Захист від перегріву:** Wi-Fi вимикається, якщо чип нагрівається вище 85 °C, і знову дозволяється після охолодження до 75 °C.
+- **Сон:** якщо авто не знайдено 15 хвилин, плата засинає й прокидається від активності на CAN-шині.
+- **Лише читання:** прилад надсилає тільки стандартні запити режиму 01 і нічого не записує в авто.
+- Режим **DEMO** для налагодження без авто.
 
-## What It Looks Like
+## Як виглядає
 
-Schematic representation of two screens (arc color changes near the scale limit):
+Схематичне зображення двох екранів (колір дуги змінюється біля межі шкали):
 
-![Gauge screens](docs/images/screens.png)
+![Екрани приладу](docs/images/screens.png)
 
-Smartphone control page (captured from the actual firmware HTML with test data):
+Сторінка керування зі смартфона (знімок зроблено з реального HTML прошивки з тестовими даними):
 
-<img src="docs/images/wifi-page.png" alt="Control page" width="320">
+<img src="docs/images/wifi-page.png" alt="Сторінка керування" width="320">
 
-First prototype on a breadboard (showing an older interface version):
+Перший прототип на макетній платі (на фото стара версія інтерфейсу):
 
-<img src="docs/images/breadboard-prototype.jpg" alt="Breadboard prototype" width="520">
+<img src="docs/images/breadboard-prototype.jpg" alt="Прототип на макетці" width="520">
 
-## Bill of Materials
+## Що потрібно
 
-| Component | Note |
+| Компонент | Примітка |
 |---|---|
-| ESP32-C3 SuperMini | An option for ESP32 WROOM-32 DevKit is also available, see [docs/hardware.md](docs/hardware.md) |
-| GC9A01 1.28" 240×240 SPI Display, 7 pins | Non-touch version: VCC, GND, SCL, SDA, DC, CS, RST |
-| **SN65HVD230** CAN Transceiver (3.3V) | **Do not** use TJA1050 or MCP2551: they are 5V-only |
-| OBD-II connector with wires | Pins 4/5, 6, 14, 16 required |
-| MP1584EN step-down buck converter | **Set to 5.0V using a multimeter** before connecting the board |
-| 1A Fuse | For the +12V line |
-| Dupont wires, breadboard | For assembly and testing |
+| ESP32-C3 SuperMini | є варіант для ESP32 WROOM-32 DevKit, див. [docs/hardware.md](docs/hardware.md) |
+| Дисплей GC9A01 1.28" 240×240, SPI, 7 пінів | версія без тачскріна: VCC, GND, SCL, SDA, DC, CS, RST |
+| CAN-трансивер **SN65HVD230** (3.3 V) | **не** TJA1050 і не MCP2551: вони на 5 V |
+| Штекер OBD-II з виводами | потрібні піни 4/5, 6, 14, 16 |
+| Понижувальний перетворювач MP1584EN | **виставити 5.0 V мультиметром** до підключення плати |
+| Запобіжник 1 А | у лінію +12 V |
+| Дроти Dupont, макетна плата | для збирання й тестів |
 
-## Wiring Diagram
+## Схема підключення
 
-![Wiring diagram](docs/images/wiring.png)
+![Схема підключення](docs/images/wiring.png)
 
-| ESP32-C3 SuperMini | Destination |
+| ESP32-C3 SuperMini | Куди |
 |---|---|
-| GPIO6 | Display SCL |
-| GPIO7 | Display SDA |
-| GPIO10 | Display CS |
-| GPIO1 | Display DC |
-| GPIO0 | Display RST |
-| GPIO3 | CAN Transceiver CTX |
-| GPIO4 | CAN Transceiver CRX |
-| GPIO9 (BOOT) | Onboard button |
-| 3V3, GND | Display and transceiver power |
-| 5V, GND | Buck converter output |
+| GPIO6 | дисплей SCL |
+| GPIO7 | дисплей SDA |
+| GPIO10 | дисплей CS |
+| GPIO1 | дисплей DC |
+| GPIO0 | дисплей RST |
+| GPIO3 | CAN-трансивер CTX |
+| GPIO4 | CAN-трансивер CRX |
+| GPIO9 (BOOT) | кнопка на платі |
+| 3V3, GND | живлення дисплея й трансивера |
+| 5V, GND | вихід buck-конвертера |
 
-CANH → OBD-II pin 6, CANL → pin 14, GND → pin 4 or 5. **Power (recommended):** Switched +12V from a fuse tap → buck converter 5.0V; do not connect OBD-II pin 16 so the gauge draws zero power when the ignition is off.
-For details, see [docs/hardware.md](docs/hardware.md).
+CANH → пін 6 розʼєму OBD-II, CANL → пін 14, GND → пін 4 або 5. **Живлення (рекомендовано):** комутований +12 V від перехідника для запобіжника (fuse tap) → buck 5.0 V; пін 16 OBD-II не підключати, тоді з вимкненим запалюванням прилад нічого не споживає.
+Докладно: [docs/hardware.md](docs/hardware.md).
 
-## Quick Start
+## Швидкий старт
 
-1. Assemble the device according to the wiring diagram ([docs/hardware.md](docs/hardware.md)).
-2. Set up Arduino IDE and libraries ([docs/software.md](docs/software.md)): ESP32 board support, **LVGL 8.3.11**, and GFX Library for Arduino. Copy [`firmware/lv_conf.h`](firmware/lv_conf.h) to `Documents/Arduino/libraries/` (next to the `lvgl` folder).
-3. Open `firmware/speedo_universalwifi/speedo_universalwifi.ino`. Board settings: **ESP32C3 Dev Module**, **USB CDC On Boot: Enabled**, **Partition Scheme: Huge APP (3MB No OTA/1MB SPIFFS)**.
-4. Change the Wi-Fi password `WIFI_PASS` (minimum 8 characters).
-5. First, set `#define DEMO 1`, flash the device, and verify the display works. Then switch back to `DEMO 0`.
-6. **Disconnect the buck converter** and flash via USB. Then connect it to the car.
+1. Зберіть пристрій за схемою ([docs/hardware.md](docs/hardware.md)).
+2. Налаштуйте Arduino IDE й бібліотеки ([docs/software.md](docs/software.md)): плата ESP32, **LVGL 8.3.11**, GFX Library for Arduino. Скопіюйте [`firmware/lv_conf.h`](firmware/lv_conf.h) у `Документи/Arduino/libraries/` (поруч із папкою `lvgl`).
+3. Відкрийте `firmware/speedo_universalwifi/speedo_universalwifi.ino`. Налаштування плати: **ESP32C3 Dev Module**, **USB CDC On Boot: Enabled**, **Partition Scheme: Huge APP (3MB No OTA/1MB SPIFFS)**.
+4. Змініть пароль Wi-Fi `WIFI_PASS` (мінімум 8 символів).
+5. Спершу поставте `#define DEMO 1`, прошийте й переконайтеся, що екран працює. Потім `DEMO 0`.
+6. **Відключіть buck-конвертер** і прошийте через USB. Потім підключіть до авто.
 
-> Interface files exported from SquareLine (`ui*.c`, `ui*.h`, fonts) are required for building and are located next to the sketch in `firmware/speedo_universalwifi/`. Instructions on how to create or modify them can be found in [docs/software.md](docs/software.md).
+> Для збирання потрібні файли інтерфейсу, експортовані зі SquareLine (`ui*.c`, `ui*.h`, шрифти): вони лежать поруч зі скетчем у `firmware/speedo_universalwifi/`. Як їх створити або змінити, описано в [docs/software.md](docs/software.md).
 
-## Controls
+## Керування
 
-Onboard BOOT button (GPIO9):
+Кнопка BOOT на платі (GPIO9):
 
-| Action | Result |
+| Дія | Що відбувається |
 |---|---|
-| Short press | Next page: parameters, then "Dashboard", then back to the first parameter |
-| Hold for 0.7–2 s | Switch units: km/h ↔ mph, °C ↔ °F, bar ↔ psi |
-| Hold for 2–4 s | Brightness: 100 → 60 → 30 → 14 % |
-| Hold for 4+ s | Toggle Wi-Fi on/off (triggers while the button is still held down) |
+| Коротке натискання | наступна сторінка: параметри, потім «Панель», потім знову перший параметр |
+| Утримання 0.7–2 с | км/год ↔ mph, °C ↔ °F, бар ↔ psi |
+| Утримання 2–4 с | яскравість: 100 → 60 → 30 → 14 % |
+| Утримання 4 с і більше | Wi-Fi вмикається або вимикається (спрацьовує, поки кнопка ще тримається) |
 
-> Do not hold the BOOT button while plugging in power: GPIO9 on the ESP32-C3 enters bootloader mode.
+> Не тримайте BOOT при подачі живлення: GPIO9 на ESP32-C3 вмикає режим завантаження.
 
-**Wi-Fi.** By default, the access point starts automatically (`WIFI_AUTOSTART`). Connect to the `Gauge` network (password `WIFI_PASS`) and open **`http://192.168.4.1`** in your browser (make sure to use `http://`). On the page: screen and parameter selection, brightness slider, units. Wi-Fi turns off automatically after 3 minutes of inactivity (`WIFI_IDLE_MS`, 0 = never turn off).
+**Wi-Fi.** За замовчуванням точка доступу вмикається при запуску (`WIFI_AUTOSTART`). Підключіться до мережі `Gauge` (пароль `WIFI_PASS`) і відкрийте у браузері **`http://192.168.4.1`** (саме `http://`). На сторінці: вибір екрана й параметра, повзунок яскравості, одиниці. Wi-Fi вимикається сам після 3 хвилин без дій (`WIFI_IDLE_MS`, 0 = не вимикати).
 
-## Parameters
+## Параметри
 
-Only parameters supported by your car (Mode 01 PIDs) are displayed.
+Показуються лише ті, які підтримує авто (PID режиму 01).
 
-| Name | PID | Note |
+| Назва | PID | Примітка |
 |---|---|---|
-| RPM | 0x0C | Engine speed |
-| SPEED | 0x0D | Vehicle speed |
-| COOLANT | 0x05 | Coolant temperature |
-| BOOST | 0x0B (+0x33) | Boost pressure = MAP − barometric pressure |
-| LOAD | 0x04 | Engine load |
-| THROTTLE | 0x11 | Throttle position |
-| FUEL | 0x2F | Fuel level (smoothed) |
-| VOLTAGE | 0x42 | System voltage |
-| INTAKE | 0x0F | Intake air temperature |
-| AMBIENT | 0x46 | Ambient temperature |
-| OIL | 0x5C | Oil temperature (not supported on all cars) |
-| MAF | 0x10 | Mass air flow |
-| FUEL RATE | 0x5E | Fuel consumption rate |
-| CAT B1S1 / B1S2 | 0x3C / 0x3E | Catalyst temperature |
+| RPM | 0x0C | обороти |
+| SPEED | 0x0D | швидкість |
+| COOLANT | 0x05 | температура ОР |
+| BOOST | 0x0B (+0x33) | надлишковий тиск = MAP − атмосферний |
+| LOAD | 0x04 | навантаження двигуна |
+| THROTTLE | 0x11 | положення дроселя |
+| FUEL | 0x2F | рівень палива (згладжений) |
+| VOLTAGE | 0x42 | напруга бортмережі |
+| INTAKE | 0x0F | температура впускного повітря |
+| AMBIENT | 0x46 | температура довкілля |
+| OIL | 0x5C | температура оливи (є не на всіх авто) |
+| MAF | 0x10 | витрата повітря |
+| FUEL RATE | 0x5E | витрата палива |
+| CAT B1S1 / B1S2 | 0x3C / 0x3E | температура каталізатора |
 
-To add a custom parameter: add a single line to the `PARAMS` table and (if necessary) a formula in `decodePid()`.
-The list of PIDs supported by your car is printed by the gauge to the Serial Monitor (`Supported PIDs: ...`). For independent testing without a screen, use the utility [`tools/pidscan`](tools/pidscan/pidscan.ino).
+Додати свій параметр: один рядок у таблиці `PARAMS` і (за потреби) формула в `decodePid()`.
+Список PID, які підтримує саме ваше авто, прилад виводить у Serial Monitor (`Supported PIDs: ...`). Для окремої перевірки без екрана є утиліта [`tools/pidscan`](tools/pidscan/pidscan.ino).
 
-## Code Configuration
+## Налаштування в коді
 
-Flags at the top of `speedo_universalwifi.ino`:
+Прапорці вгорі `speedo_universalwifi.ino`:
 
-| Parameter | Description |
+| Параметр | Що робить |
 |---|---|
-| `DEMO` | 1 = dummy values, no car needed |
-| `DEBUG_SERIAL` | 1 = prints values, response frequency, and response time to Serial once per second |
-| `BOOT_ANIM`, `BOOT_UP_MS`, `BOOT_DOWN_MS` | Startup arc animation settings |
-| `ENABLE_WIFI` | 0 = Wi-Fi completely disabled in code |
-| `WIFI_AUTOSTART` | 1 = Wi-Fi turns on at startup |
-| `WIFI_SSID`, `WIFI_PASS` | Network name and password (change the password!) |
-| `WIFI_IDLE_MS` | Auto-turn off Wi-Fi after inactivity, 0 = never |
-| `WIFI_TX_POWER` | Transmitter power (lower = more stable on SuperMini) |
-| `WIFI_TEMP_OFF`, `WIFI_TEMP_ON` | Overheat protection: Wi-Fi turns off at crystal temp ≥ OFF and re-enables ≤ ON (0 = protection disabled) |
-| `SLEEP_AFTER_MS` | Sleep after this many ms without finding a car (0 = do not sleep) |
-| `ENABLE_DASH` | 1 = "Dashboard" screen (requires setup in SquareLine project) |
-| `RPM_MAX` | End of the RPM scale (diesel ≈ 5000, gasoline ≈ 7000) |
+| `DEMO` | 1 = вигадані значення, без авто |
+| `DEBUG_SERIAL` | 1 = раз на секунду друкує значення, частоту відповідей і час відповіді авто |
+| `BOOT_ANIM`, `BOOT_UP_MS`, `BOOT_DOWN_MS` | стартова анімація дуги |
+| `ENABLE_WIFI` | 0 = Wi-Fi повністю вимкнено в коді |
+| `WIFI_AUTOSTART` | 1 = Wi-Fi вмикається при запуску |
+| `WIFI_SSID`, `WIFI_PASS` | назва й пароль мережі (пароль змініть!) |
+| `WIFI_IDLE_MS` | автовимкнення Wi-Fi після простою, 0 = ніколи |
+| `WIFI_TX_POWER` | потужність передавача (нижча = стабільніше на SuperMini) |
+| `WIFI_TEMP_OFF`, `WIFI_TEMP_ON` | захист від перегріву: Wi-Fi вимикається за температури кристала ≥ OFF і дозволяється знову ≤ ON (0 = захист вимкнено) |
+| `SLEEP_AFTER_MS` | сон після стількох мс без знайденого авто (0 = не засинати) |
+| `ENABLE_DASH` | 1 = екран «Панель» (потрібен у проєкті SquareLine) |
+| `RPM_MAX` | кінець шкали обертів (дизель ≈ 5000, бензин ≈ 7000) |
 
-## How It Works
+## Як це працює
 
 ```mermaid
 flowchart LR
-  CAR["Car (OBD-II)"] -- CAN --> TR["SN65HVD230"]
+  CAR["Авто (OBD-II)"] -- CAN --> TR["SN65HVD230"]
   TR --> POLL
   subgraph MCU["ESP32-C3"]
-    SCAN["Autoscan: bus speed + PIDs"] --> TBL["PARAMS table"]
-    POLL["PID polling (Mode 01)"] --> UI["LVGL UI"]
-    BTN["BOOT button"] --> UI
-    WEB["Wi-Fi Web Server (separate task)"] -- "commands" --> UI
+    SCAN["Автопошук: швидкість шини + PID"] --> TBL["Таблиця PARAMS"]
+    POLL["Опитування PID (режим 01)"] --> UI["LVGL UI"]
+    BTN["Кнопка BOOT"] --> UI
+    WEB["Веб-сервер Wi-Fi (окреме завдання)"] -- "команди" --> UI
   end
   UI --> LCD["GC9A01 240x240"]
-  PHONE["Smartphone"] -- Wi-Fi --> WEB
-Only the currently displayed parameter is polled (plus barometric pressure for boost), keeping updates fast without overloading the bus.
+  PHONE["Смартфон"] -- Wi-Fi --> WEB
+```
 
-The web server runs in a separate FreeRTOS task and only passes commands: LVGL and CAN are handled by the main loop.
+- Опитується лише той параметр, який зараз на екрані (плюс атмосферний тиск для boost), тому оновлення швидке, а шина не перевантажується.
+- Веб-сервер працює в окремому завданні FreeRTOS і лише залишає команди: LVGL і CAN обробляє головний цикл.
+- Якщо авто мовчить 8 секунд (запалювання вимкнено), прилад повертається до пошуку.
 
-If the car remains silent for 8 seconds (ignition off), the gauge returns to searching.
+## Структура репозиторію
 
-Repository Structure
+```
 esp32-obd-gauge/
 ├─ firmware/
-│  ├─ lv_conf.h                  # LVGL 8.3.11 configuration
-│  └─ speedo_universalwifi/          # Arduino sketch + SquareLine export (ui*.c/h, fonts)
-├─ tools/pidscan/                # Utility: check which PIDs your car supports
-├─ assets/arc-segment-masks/     # Experimental arc segment masks (not currently used)
+│  ├─ lv_conf.h                  # конфігурація LVGL 8.3.11
+│  └─ speedo_universalwifi/          # скетч Arduino + експорт SquareLine (ui*.c/h, шрифти)
+├─ tools/pidscan/                # утиліта: які PID підтримує авто
+├─ assets/arc-segment-masks/     # експериментальні маски сегментів дуги (поки не використовуються)
 ├─ docs/                         # hardware.md, software.md, troubleshooting.md, images/
 ├─ LICENSE
 └─ README.md
-Safety
-The gauge is read-only: it sends standard Mode 01 requests (broadcast ID 0x7DF) and never writes anything to the car.
+```
 
-Power the gauge from a switched +12V source (fuse tap with ignition), use a 1–2A fuse, and check polarity. Set the buck converter to 5.0V using a multimeter before connecting the board.
+## Безпека
 
-OBD-II connector pin 16 has permanent power: drawing power from it will keep the device running even when the ignition is off (current draw was not measured, display backlight remains active even in sleep mode). A fuse tap is strongly recommended.
+- Прилад **лише читає** дані: надсилає стандартні запити режиму 01 (широкомовний ID 0x7DF) і нічого не записує в авто.
+- Живіть прилад від **комутованого +12 V** (fuse tap із запалюванням), запобіжник 1–2 А, і перевіряйте полярність. Налаштуйте buck на 5.0 V мультиметром до підключення плати.
+- Пін 16 розʼєму OBD-II живиться постійно: якщо взяти живлення з нього, прилад споживатиме струм і при вимкненому запалюванні (споживання не вимірювалося, підсвітка дисплея не вимикається навіть у сні). Краще використовувати fuse tap.
+- Не користуйтеся телефоном за кермом: налаштовуйте на стоянці.
+- Автор не несе відповідальності за наслідки використання.
 
-Do not use your smartphone while driving: configure settings while parked.
+## Плани
 
-The author is not responsible for any consequences of using this project.
+- Читання кодів несправностей (режими 03/07/0A).
+- 29-бітні CAN-адреси; старі авто з K-line (потрібен інший перехідник).
+- Індикатор регенерації DPF (за температурою каталізатора або специфічними для марки даними).
+- Сегментована дуга (маска-картинка в LVGL 8).
+- Автояскравість за фоторезистором.
+- Корпус для друку уже додано 1,28TFT ESP32.stl https://github.com/fixdiaglab-design/esp32-obd-gauge/blob/726abba0fef0f42f35b03aa80159b9053e036a94/1%2C28TFT%20ESP32.stl
 
-Roadmap
-Diagnostic Trouble Code (DTC) reading (Modes 03/07/0A).
+## Ліцензія та подяки
 
-29-bit CAN addresses; older cars with K-line (requires a different adapter).
+Код розповсюджується за ліцензією [MIT](LICENSE).
 
-DPF regeneration indicator (based on catalyst temperature or brand-specific data).
-
-Segmented arc (image mask in LVGL 8).
-
-Auto-brightness via photoresistor.
-
-3D printable enclosure already added: 1,28TFT ESP32.stl.
-
-License and Acknowledgments
-Distributed under the MIT License.
-
-LVGL (MIT), GFX Library for Arduino, Espressif TWAI driver.
-
-Interface designed in SquareLine Studio.
-
-Large digits font (ui_font_Font2) generated from Russo One (SIL Open Font License); small labels use Montserrat from LVGL (SIL OFL).
+- [LVGL](https://lvgl.io/) (MIT), [GFX Library for Arduino](https://github.com/moononournation/Arduino_GFX), драйвер TWAI від Espressif.
+- Інтерфейс спроєктовано в SquareLine Studio.
+- Шрифт великих цифр (`ui_font_Font2`) згенеровано зі шрифту Russo One (SIL Open Font License); дрібні написи використовують Montserrat із LVGL (SIL OFL).
